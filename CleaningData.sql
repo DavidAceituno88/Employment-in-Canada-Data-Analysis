@@ -1,0 +1,98 @@
+SELECT *
+FROM UnemploymentCanada
+
+/*Standarize Date Format*/
+ALTER TABLE unemploymentCanada
+Add Year Int;
+
+UPDATE UnemploymentCanada
+SET Year = CAST(LEFT(REF_DATE,CHARINDEX('-',REF_DATE)-1) AS INT)
+
+ALTER TABLE unemploymentCanada
+Add Week Int;
+
+UPDATE UnemploymentCanada
+SET Week = CAST(RIGHT(REF_DATE, LEN(ref_date) - CHARINDEX('-',REF_DATE)) AS INT)
+
+ALTER TABLE unemploymentCanada
+DROP COLUMN REF_DATE;
+------------------------------------------------------------------------------------------------
+
+/*Giving more proper names to some columns*/
+
+ALTER TABLE unemploymentCanada
+ADD Province VARCHAR(50)
+
+UPDATE UnemploymentCanada
+SET Province = GEO
+
+ALTER TABLE unemploymentCanada
+DROP COLUMN GEO;
+
+------------------------------------------------------------------------------------------------
+
+/*Standarize the AGE GROUP*/
+/*Divide the age grop from one big string to 2 values minimum age and maximum age or FROM AGE , TO AGE*/
+
+SELECT "age group" ,LEFT("age group",2), RIGHT(LEFT("age group",PATINDEX('% YEARS%',"Age group")),3) 
+FROM UnemploymentCanada;
+
+ALTER TABLE unemploymentCanada
+ADD fromAge int,
+toAge INT;
+
+UPDATE UnemploymentCanada
+SET fromAge = CAST(LEFT("age group",2) AS INT),
+toAge = CAST(RIGHT(LEFT("age group",PATINDEX('% YEARS%',"Age group")),3) AS INT);
+
+ALTER TABLE unemploymentCanada
+DROP COLUMN "age group";
+
+------------------------------------------------------------------------------------------------
+
+/*Standarize Employment related columns*/
+ALTER TABLE unemploymentCanada
+ADD employment_num DECIMAL(10,2),
+	fullTime_Emp DECIMAL(10,2),
+	labour_force DECIMAL(10,2),
+	part_time_emp DECIMAL(10,2),
+	population_total DECIMAL(10,2),
+	unemployment_num DECIMAL(10,2),
+	employment_rate DECIMAL(10,2),
+	unemployment_rate DECIMAL(10,2),
+	participation_rate DECIMAL(10,2);
+
+UPDATE UnemploymentCanada
+SET employment_num = TRY_CAST(employment AS decimal(10,2)),
+	fullTime_Emp = TRY_CAST("Full-time employment" AS decimal(10,2)),
+	labour_force = TRY_CAST("Labour force" AS decimal(10,2)),
+	part_time_emp = TRY_CAST("Part-time employment " AS decimal(10,2)),
+	population_total = TRY_CAST("Population" AS decimal(10,2)),
+	unemployment_num = TRY_CAST(Unemployment AS decimal(10,2)),
+	employment_rate = TRY_CAST("Employment rate" AS decimal(10,2)),
+	participation_rate = TRY_CAST("Participation rate" AS decimal(10,2)),
+	unemployment_rate = TRY_CAST("Unemployment rate" AS decimal(10,2));
+	
+	---Get rid of null values--
+UPDATE UnemploymentCanada
+SET "Part-time employment " = ISNULL("Part-time employment ", 0);
+
+ALTER TABLE unemploymentCanada
+DROP COLUMN "employment",
+"full-time employment",
+"labour force",
+"Part-time employment ",
+"Population",
+"Unemployment",
+"Employment rate",
+"Participation rate",
+"Unemployment rate";
+
+------------------------------------------------------------------------------------------------
+/*Data analysis*/
+
+SELECT year, AVG(employment_rate) OVER(PARTITION BY year ORDER BY year) ,AVG(unemployment_rate) OVER(PARTITION BY YEAR ORDER BY YEAR) 
+FROM UnemploymentCanada
+
+SELECT *
+FROM UnemploymentCanada
