@@ -9,13 +9,25 @@ UPDATE UnemploymentCanada
 SET Year = CAST(LEFT(REF_DATE,CHARINDEX('-',REF_DATE)-1) AS INT)
 
 ALTER TABLE unemploymentCanada
-Add Week Int;
+Add Month VARCHAR (20);
 
 UPDATE UnemploymentCanada
-SET Week = CAST(RIGHT(REF_DATE, LEN(ref_date) - CHARINDEX('-',REF_DATE)) AS INT)
+SET Month = CASE WHEN week =1 THEN 'JAN'
+				 WHEN week =2 THEN 'FEB'
+				 WHEN week =3 THEN 'MAR'
+				 WHEN week =4 THEN 'APR'
+				 WHEN week =5 THEN 'MAY'
+				 WHEN week =6 THEN 'JUN'
+				 WHEN week =7 THEN 'JUL'
+				 WHEN week =8 THEN 'AUG'
+				 WHEN week =9 THEN 'SEP'
+				 WHEN week =10 THEN 'OCT'
+				 WHEN week =11 THEN 'NOV'
+				 WHEN week =12 THEN 'DEC'
+END;
 
 ALTER TABLE unemploymentCanada
-DROP COLUMN REF_DATE;
+DROP COLUMN ref_date ;
 ------------------------------------------------------------------------------------------------
 
 /*Giving more proper names to some columns*/
@@ -75,7 +87,15 @@ SET employment_num = TRY_CAST(employment AS decimal(10,2)),
 	
 	---Get rid of null values--
 UPDATE UnemploymentCanada
-SET "Part-time employment " = ISNULL("Part-time employment ", 0);
+SET "employment_num" = ISNULL("employment_num", 0),
+"fullTime_Emp" = ISNULL("fullTime_Emp", 0),
+"labour_force" = ISNULL("labour_force", 0),
+"part_time_emp" = ISNULL("part_time_emp", 0),
+"population_total" = ISNULL("population_total", 0),
+"unemployment_num" = ISNULL("unemployment_num", 0),
+"employment_rate" = ISNULL("employment_rate", 0),
+"unemployment_rate" = ISNULL("unemployment_rate", 0),
+"participation_rate" = ISNULL("participation_rate", 0);
 
 ALTER TABLE unemploymentCanada
 DROP COLUMN "employment",
