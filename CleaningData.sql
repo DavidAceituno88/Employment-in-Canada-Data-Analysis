@@ -115,4 +115,4 @@ SELECT year, AVG(employment_rate) OVER(PARTITION BY year ORDER BY year) ,AVG(une
 FROM UnemploymentCanada
 
 SELECT *
-FROM UnemploymentCanada
+FROM UnemploymentCanada 
