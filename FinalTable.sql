@@ -11,6 +11,4 @@ JOIN UnemploymentCanadaAnalytics uc ON u.province = uc.province AND u.year = uc.
 JOIN primeMinistersClean p ON u.year BETWEEN p.start_mandate AND p.end_mandate -1 --Substract a year to avoid OVERLAPING BETWEEN PRIME MINISTERS 
 ORDER BY u.year
 
-
-
 SELECT * FROM employmentCanadaAnalysis
