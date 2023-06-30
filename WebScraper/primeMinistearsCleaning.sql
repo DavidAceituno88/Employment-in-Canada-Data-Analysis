@@ -53,7 +53,7 @@
 		INTO primeMinistersClean
 FROM primeMinisters
 
-SELECT * FROM primeMinistersClean
+SELECT * FROM primeMinistersClean 
 
  
   
