@@ -12,7 +12,7 @@ ALTER TABLE unemploymentCanada
 Add Month VARCHAR (20);
 
 UPDATE UnemploymentCanada
-SET Month = CASE WHEN week =1 THEN 'JAN'
+SET Month = CASE WHEN week = 1 THEN 'JAN'
 				 WHEN week =2 THEN 'FEB'
 				 WHEN week =3 THEN 'MAR'
 				 WHEN week =4 THEN 'APR'
